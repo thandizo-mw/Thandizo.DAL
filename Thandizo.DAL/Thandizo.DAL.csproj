@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Authors>Thandizo Development Team</Authors>
+    <Company>Thandizo</Company>
+    <Description>This library forms as a data access layer (DAL) to be used by web API</Description>
   </PropertyGroup>
 
   <ItemGroup>
