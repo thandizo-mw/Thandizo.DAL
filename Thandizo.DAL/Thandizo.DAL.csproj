@@ -5,6 +5,7 @@
     <Authors>Thandizo Development Team</Authors>
     <Company>Thandizo</Company>
     <Description>This library forms as a data access layer (DAL) to be used by web API</Description>
+    <Version>1.0.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
