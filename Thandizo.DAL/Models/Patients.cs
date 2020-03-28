@@ -7,9 +7,11 @@ namespace Thandizo.DAL.Models
     {
         public Patients()
         {
+            PatientDailyStatuses = new HashSet<PatientDailyStatuses>();
             PatientFacilityMovements = new HashSet<PatientFacilityMovements>();
             PatientHistory = new HashSet<PatientHistory>();
             PatientLocationMovements = new HashSet<PatientLocationMovements>();
+            PatientTravelHistory = new HashSet<PatientTravelHistory>();
         }
 
         public long PatientId { get; set; }
@@ -34,13 +36,19 @@ namespace Thandizo.DAL.Models
         public DateTime? DateModified { get; set; }
         public string ModifiedBy { get; set; }
         public string RowAction { get; set; }
+        public string NationalityCode { get; set; }
+        public int ClassificationId { get; set; }
 
+        public virtual TransmissionClassifications Classification { get; set; }
         public virtual DataCenters DataCenter { get; set; }
         public virtual Districts DistrictCodeNavigation { get; set; }
         public virtual IdentificationTypes IdentificationType { get; set; }
+        public virtual Nationalities NationalityCodeNavigation { get; set; }
         public virtual PatientStatuses PatientStatus { get; set; }
+        public virtual ICollection<PatientDailyStatuses> PatientDailyStatuses { get; set; }
         public virtual ICollection<PatientFacilityMovements> PatientFacilityMovements { get; set; }
         public virtual ICollection<PatientHistory> PatientHistory { get; set; }
         public virtual ICollection<PatientLocationMovements> PatientLocationMovements { get; set; }
+        public virtual ICollection<PatientTravelHistory> PatientTravelHistory { get; set; }
     }
 }

@@ -15,20 +15,26 @@ namespace Thandizo.DAL.Models
         {
         }
 
+        public virtual DbSet<Countries> Countries { get; set; }
         public virtual DbSet<DataCenters> DataCenters { get; set; }
         public virtual DbSet<Districts> Districts { get; set; }
         public virtual DbSet<FacilityTypes> FacilityTypes { get; set; }
         public virtual DbSet<HealthCareWorkers> HealthCareWorkers { get; set; }
         public virtual DbSet<HealthFacilityResources> HealthFacilityResources { get; set; }
         public virtual DbSet<IdentificationTypes> IdentificationTypes { get; set; }
+        public virtual DbSet<Nationalities> Nationalities { get; set; }
+        public virtual DbSet<PatientDailyStatuses> PatientDailyStatuses { get; set; }
         public virtual DbSet<PatientFacilityMovements> PatientFacilityMovements { get; set; }
         public virtual DbSet<PatientHistory> PatientHistory { get; set; }
         public virtual DbSet<PatientLocationMovements> PatientLocationMovements { get; set; }
         public virtual DbSet<PatientStatuses> PatientStatuses { get; set; }
+        public virtual DbSet<PatientSymptoms> PatientSymptoms { get; set; }
+        public virtual DbSet<PatientTravelHistory> PatientTravelHistory { get; set; }
         public virtual DbSet<Patients> Patients { get; set; }
         public virtual DbSet<Regions> Regions { get; set; }
         public virtual DbSet<Resources> Resources { get; set; }
         public virtual DbSet<ResourcesAllocation> ResourcesAllocation { get; set; }
+        public virtual DbSet<TransmissionClassifications> TransmissionClassifications { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -41,6 +47,45 @@ namespace Thandizo.DAL.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Countries>(entity =>
+            {
+                entity.HasKey(e => e.CountryCode)
+                    .HasName("countries_pkey");
+
+                entity.ToTable("countries");
+
+                entity.Property(e => e.CountryCode)
+                    .HasColumnName("country_code")
+                    .HasMaxLength(3);
+
+                entity.Property(e => e.CountryName)
+                    .IsRequired()
+                    .HasColumnName("country_name")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("created_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.DateCreated)
+                    .HasColumnName("date_created")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.DateModified)
+                    .HasColumnName("date_modified")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.ModifiedBy)
+                    .HasColumnName("modified_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.RowAction)
+                    .IsRequired()
+                    .HasColumnName("row_action")
+                    .HasMaxLength(1);
+            });
+
             modelBuilder.Entity<DataCenters>(entity =>
             {
                 entity.HasKey(e => e.CenterId)
@@ -373,6 +418,95 @@ namespace Thandizo.DAL.Models
                     .HasMaxLength(1);
             });
 
+            modelBuilder.Entity<Nationalities>(entity =>
+            {
+                entity.HasKey(e => e.NationalityCode)
+                    .HasName("nationalities_pkey");
+
+                entity.ToTable("nationalities");
+
+                entity.Property(e => e.NationalityCode)
+                    .HasColumnName("nationality_code")
+                    .HasMaxLength(5);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("created_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.DateCreated)
+                    .HasColumnName("date_created")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.DateModified)
+                    .HasColumnName("date_modified")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.ModifiedBy)
+                    .HasColumnName("modified_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.NationalityName)
+                    .IsRequired()
+                    .HasColumnName("nationality_name")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.RowAction)
+                    .IsRequired()
+                    .HasColumnName("row_action")
+                    .HasMaxLength(1);
+            });
+
+            modelBuilder.Entity<PatientDailyStatuses>(entity =>
+            {
+                entity.HasKey(e => e.SubmissionId)
+                    .HasName("patient_daily_statuses_pkey");
+
+                entity.ToTable("patient_daily_statuses");
+
+                entity.Property(e => e.SubmissionId)
+                    .HasColumnName("submission_id")
+                    .HasDefaultValueSql("nextval('seq_patient_submission_id'::regclass)");
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("created_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.DateCreated)
+                    .HasColumnName("date_created")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.DateModified)
+                    .HasColumnName("date_modified")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.ModifiedBy)
+                    .HasColumnName("modified_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.PatientId).HasColumnName("patient_id");
+
+                entity.Property(e => e.RowAction)
+                    .IsRequired()
+                    .HasColumnName("row_action")
+                    .HasMaxLength(1);
+
+                entity.Property(e => e.SymptomId).HasColumnName("symptom_id");
+
+                entity.HasOne(d => d.Patient)
+                    .WithMany(p => p.PatientDailyStatuses)
+                    .HasForeignKey(d => d.PatientId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("pds_patient_id_fk");
+
+                entity.HasOne(d => d.Symptom)
+                    .WithMany(p => p.PatientDailyStatuses)
+                    .HasForeignKey(d => d.SymptomId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("pds_symptom_id_fk");
+            });
+
             modelBuilder.Entity<PatientFacilityMovements>(entity =>
             {
                 entity.HasKey(e => e.MovementId)
@@ -552,6 +686,98 @@ namespace Thandizo.DAL.Models
                 entity.Property(e => e.Severity).HasColumnName("severity");
             });
 
+            modelBuilder.Entity<PatientSymptoms>(entity =>
+            {
+                entity.HasKey(e => e.SymptomId)
+                    .HasName("patient_symptoms_pkey");
+
+                entity.ToTable("patient_symptoms");
+
+                entity.Property(e => e.SymptomId)
+                    .HasColumnName("symptom_id")
+                    .HasDefaultValueSql("nextval('seq_patient_symptom_id'::regclass)");
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("created_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.DateCreated)
+                    .HasColumnName("date_created")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.DateModified)
+                    .HasColumnName("date_modified")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.ModifiedBy)
+                    .HasColumnName("modified_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.RowAction)
+                    .IsRequired()
+                    .HasColumnName("row_action")
+                    .HasMaxLength(1);
+
+                entity.Property(e => e.SymptomName)
+                    .IsRequired()
+                    .HasColumnName("symptom_name")
+                    .HasMaxLength(40);
+            });
+
+            modelBuilder.Entity<PatientTravelHistory>(entity =>
+            {
+                entity.HasKey(e => e.TravelId)
+                    .HasName("patient_travel_history_pkey");
+
+                entity.ToTable("patient_travel_history");
+
+                entity.Property(e => e.TravelId)
+                    .HasColumnName("travel_id")
+                    .HasDefaultValueSql("nextval('seq_patient_travel_id'::regclass)");
+
+                entity.Property(e => e.CountryCode)
+                    .IsRequired()
+                    .HasColumnName("country_code")
+                    .HasMaxLength(3);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("created_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.DateCreated)
+                    .HasColumnName("date_created")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.DateModified)
+                    .HasColumnName("date_modified")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.ModifiedBy)
+                    .HasColumnName("modified_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.PatientId).HasColumnName("patient_id");
+
+                entity.Property(e => e.RowAction)
+                    .IsRequired()
+                    .HasColumnName("row_action")
+                    .HasMaxLength(1);
+
+                entity.HasOne(d => d.CountryCodeNavigation)
+                    .WithMany(p => p.PatientTravelHistory)
+                    .HasForeignKey(d => d.CountryCode)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("pth_country_code_fk");
+
+                entity.HasOne(d => d.Patient)
+                    .WithMany(p => p.PatientTravelHistory)
+                    .HasForeignKey(d => d.PatientId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("pth_patient_id_fk");
+            });
+
             modelBuilder.Entity<Patients>(entity =>
             {
                 entity.HasKey(e => e.PatientId)
@@ -565,6 +791,8 @@ namespace Thandizo.DAL.Models
                 entity.Property(e => e.PatientId)
                     .HasColumnName("patient_id")
                     .HasDefaultValueSql("nextval('seq_patient_id'::regclass)");
+
+                entity.Property(e => e.ClassificationId).HasColumnName("classification_id");
 
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
@@ -633,6 +861,11 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("modified_by")
                     .HasMaxLength(40);
 
+                entity.Property(e => e.NationalityCode)
+                    .IsRequired()
+                    .HasColumnName("nationality_code")
+                    .HasMaxLength(5);
+
                 entity.Property(e => e.OtherNames)
                     .HasColumnName("other_names")
                     .HasMaxLength(40);
@@ -652,6 +885,12 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("row_action")
                     .HasMaxLength(1);
 
+                entity.HasOne(d => d.Classification)
+                    .WithMany(p => p.Patients)
+                    .HasForeignKey(d => d.ClassificationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("pt_classification_id_fk");
+
                 entity.HasOne(d => d.DataCenter)
                     .WithMany(p => p.Patients)
                     .HasForeignKey(d => d.DataCenterId)
@@ -669,6 +908,12 @@ namespace Thandizo.DAL.Models
                     .HasForeignKey(d => d.IdentificationTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("identification_type_id_fk");
+
+                entity.HasOne(d => d.NationalityCodeNavigation)
+                    .WithMany(p => p.Patients)
+                    .HasForeignKey(d => d.NationalityCode)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("pth_nationality_code_fk");
 
                 entity.HasOne(d => d.PatientStatus)
                     .WithMany(p => p.Patients)
@@ -807,6 +1052,45 @@ namespace Thandizo.DAL.Models
                     .HasConstraintName("ra_resource_id_fk");
             });
 
+            modelBuilder.Entity<TransmissionClassifications>(entity =>
+            {
+                entity.HasKey(e => e.ClassificationId)
+                    .HasName("transmission_classifications_pkey");
+
+                entity.ToTable("transmission_classifications");
+
+                entity.Property(e => e.ClassificationId)
+                    .HasColumnName("classification_id")
+                    .HasDefaultValueSql("nextval('seq_trans_classification_id'::regclass)");
+
+                entity.Property(e => e.ClassificationName)
+                    .IsRequired()
+                    .HasColumnName("classification_name")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("created_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.DateCreated)
+                    .HasColumnName("date_created")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.DateModified)
+                    .HasColumnName("date_modified")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.ModifiedBy)
+                    .HasColumnName("modified_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.RowAction)
+                    .IsRequired()
+                    .HasColumnName("row_action")
+                    .HasMaxLength(1);
+            });
+
             modelBuilder.HasSequence("seq_center_id");
 
             modelBuilder.HasSequence("seq_facility_movement_id");
@@ -827,11 +1111,19 @@ namespace Thandizo.DAL.Models
 
             modelBuilder.HasSequence("seq_patient_status_id");
 
+            modelBuilder.HasSequence("seq_patient_submission_id");
+
+            modelBuilder.HasSequence("seq_patient_symptom_id");
+
+            modelBuilder.HasSequence("seq_patient_travel_id");
+
             modelBuilder.HasSequence("seq_region_id");
 
             modelBuilder.HasSequence("seq_resource_allocation_id");
 
             modelBuilder.HasSequence("seq_resource_id");
+
+            modelBuilder.HasSequence("seq_trans_classification_id");
 
             OnModelCreatingPartial(modelBuilder);
         }
