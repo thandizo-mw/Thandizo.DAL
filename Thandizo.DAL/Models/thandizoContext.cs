@@ -41,7 +41,7 @@ namespace Thandizo.DAL.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Database=thandizo;User Id=postgres;Password=admin2013+;");
+                optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Database=thandizo;User Id=thandizo_dba;Password=admin2013+;");
             }
         }
 
@@ -477,20 +477,11 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("date_created")
                     .HasColumnType("timestamp(4) with time zone");
 
-                entity.Property(e => e.DateModified)
-                    .HasColumnName("date_modified")
+                entity.Property(e => e.DateSubmitted)
+                    .HasColumnName("date_submitted")
                     .HasColumnType("timestamp(4) with time zone");
 
-                entity.Property(e => e.ModifiedBy)
-                    .HasColumnName("modified_by")
-                    .HasMaxLength(40);
-
                 entity.Property(e => e.PatientId).HasColumnName("patient_id");
-
-                entity.Property(e => e.RowAction)
-                    .IsRequired()
-                    .HasColumnName("row_action")
-                    .HasMaxLength(1);
 
                 entity.Property(e => e.SymptomId).HasColumnName("symptom_id");
 
@@ -750,20 +741,7 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("date_created")
                     .HasColumnType("timestamp(4) with time zone");
 
-                entity.Property(e => e.DateModified)
-                    .HasColumnName("date_modified")
-                    .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.ModifiedBy)
-                    .HasColumnName("modified_by")
-                    .HasMaxLength(40);
-
                 entity.Property(e => e.PatientId).HasColumnName("patient_id");
-
-                entity.Property(e => e.RowAction)
-                    .IsRequired()
-                    .HasColumnName("row_action")
-                    .HasMaxLength(1);
 
                 entity.HasOne(d => d.CountryCodeNavigation)
                     .WithMany(p => p.PatientTravelHistory)
