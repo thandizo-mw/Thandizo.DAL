@@ -923,6 +923,16 @@ namespace Thandizo.DAL.Models
                 entity.Property(e => e.DateModified)
                     .HasColumnName("date_modified")
                     .HasColumnType("timestamp(4) with time zone");
+                
+                entity.Property(e => e.Latitude)
+                    .IsRequired()
+                    .HasColumnName("latitude")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Longitude)
+                    .IsRequired()
+                    .HasColumnName("longitude")
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.ModifiedBy)
                     .HasColumnName("modified_by")
