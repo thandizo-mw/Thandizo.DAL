@@ -177,13 +177,11 @@ namespace Thandizo.DAL.Models
 
                 entity.Property(e => e.Latitude)
                     .IsRequired()
-                    .HasColumnName("latitude")
-                    .HasMaxLength(50);
+                    .HasColumnName("latitude");
 
                 entity.Property(e => e.Longitude)
                     .IsRequired()
-                    .HasColumnName("longitude")
-                    .HasMaxLength(50);
+                    .HasColumnName("longitude");
 
                 entity.Property(e => e.ModifiedBy)
                     .HasColumnName("modified_by")
