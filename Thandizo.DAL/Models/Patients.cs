@@ -38,6 +38,8 @@ namespace Thandizo.DAL.Models
         public string RowAction { get; set; }
         public string NationalityCode { get; set; }
         public int ClassificationId { get; set; }
+        public string SourceId { get; set; }
+        public bool IsConfirmed { get; set; }
 
         public virtual TransmissionClassifications Classification { get; set; }
         public virtual DataCenters DataCenter { get; set; }
@@ -45,6 +47,7 @@ namespace Thandizo.DAL.Models
         public virtual IdentificationTypes IdentificationType { get; set; }
         public virtual Nationalities NationalityCodeNavigation { get; set; }
         public virtual PatientStatuses PatientStatus { get; set; }
+        public virtual RegistrationSources Source { get; set; }
         public virtual ICollection<PatientDailyStatuses> PatientDailyStatuses { get; set; }
         public virtual ICollection<PatientFacilityMovements> PatientFacilityMovements { get; set; }
         public virtual ICollection<PatientHistory> PatientHistory { get; set; }

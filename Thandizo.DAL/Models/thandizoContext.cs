@@ -32,6 +32,8 @@ namespace Thandizo.DAL.Models
         public virtual DbSet<PatientTravelHistory> PatientTravelHistory { get; set; }
         public virtual DbSet<Patients> Patients { get; set; }
         public virtual DbSet<Regions> Regions { get; set; }
+        public virtual DbSet<RegistrationMappings> RegistrationMappings { get; set; }
+        public virtual DbSet<RegistrationSources> RegistrationSources { get; set; }
         public virtual DbSet<Resources> Resources { get; set; }
         public virtual DbSet<ResourcesAllocation> ResourcesAllocation { get; set; }
         public virtual DbSet<TransmissionClassifications> TransmissionClassifications { get; set; }
@@ -822,6 +824,8 @@ namespace Thandizo.DAL.Models
 
                 entity.Property(e => e.IdentificationTypeId).HasColumnName("identification_type_id");
 
+                entity.Property(e => e.IsConfirmed).HasColumnName("is_confirmed");
+
                 entity.Property(e => e.LastName)
                     .IsRequired()
                     .HasColumnName("last_name")
@@ -863,6 +867,11 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("row_action")
                     .HasMaxLength(1);
 
+                entity.Property(e => e.SourceId)
+                    .IsRequired()
+                    .HasColumnName("source_id")
+                    .HasMaxLength(2);
+
                 entity.HasOne(d => d.Classification)
                     .WithMany(p => p.Patients)
                     .HasForeignKey(d => d.ClassificationId)
@@ -898,6 +907,12 @@ namespace Thandizo.DAL.Models
                     .HasForeignKey(d => d.PatientStatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("patient_status_id_fk");
+
+                entity.HasOne(d => d.Source)
+                    .WithMany(p => p.Patients)
+                    .HasForeignKey(d => d.SourceId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("p_source_id_fk");
             });
 
             modelBuilder.Entity<Regions>(entity =>
@@ -923,7 +938,7 @@ namespace Thandizo.DAL.Models
                 entity.Property(e => e.DateModified)
                     .HasColumnName("date_modified")
                     .HasColumnType("timestamp(4) with time zone");
-                
+
                 entity.Property(e => e.Latitude)
                     .IsRequired()
                     .HasColumnName("latitude")
@@ -947,6 +962,41 @@ namespace Thandizo.DAL.Models
                     .IsRequired()
                     .HasColumnName("row_action")
                     .HasMaxLength(1);
+            });
+
+            modelBuilder.Entity<RegistrationMappings>(entity =>
+            {
+                entity.HasKey(e => e.MappingId)
+                    .HasName("registration_mappings_pkey");
+
+                entity.ToTable("registration_mappings");
+
+                entity.Property(e => e.MappingId)
+                    .HasColumnName("mapping_id")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.ClassificationId).HasColumnName("classification_id");
+
+                entity.Property(e => e.DataCenterId).HasColumnName("data_center_id");
+
+                entity.Property(e => e.PatientStatusId).HasColumnName("patient_status_id");
+            });
+
+            modelBuilder.Entity<RegistrationSources>(entity =>
+            {
+                entity.HasKey(e => e.SourceId)
+                    .HasName("registration_sources_pkey");
+
+                entity.ToTable("registration_sources");
+
+                entity.Property(e => e.SourceId)
+                    .HasColumnName("source_id")
+                    .HasMaxLength(2);
+
+                entity.Property(e => e.SourceName)
+                    .IsRequired()
+                    .HasColumnName("source_name")
+                    .HasMaxLength(25);
             });
 
             modelBuilder.Entity<Resources>(entity =>
