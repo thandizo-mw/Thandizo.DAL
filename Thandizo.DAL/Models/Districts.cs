@@ -15,8 +15,8 @@ namespace Thandizo.DAL.Models
         public string DistrictCode { get; set; }
         public string DistrictName { get; set; }
         public int RegionId { get; set; }
-        public string Latitude { get; set; }
-        public string Longitude { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
         public DateTime DateCreated { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? DateModified { get; set; }
