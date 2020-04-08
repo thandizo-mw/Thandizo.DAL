@@ -177,13 +177,11 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("district_name")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Latitude)
-                    .IsRequired()
-                    .HasColumnName("latitude");
+                entity.Property(e => e.Document).HasColumnName("document");
 
-                entity.Property(e => e.Longitude)
-                    .IsRequired()
-                    .HasColumnName("longitude");
+                entity.Property(e => e.Latitude).HasColumnName("latitude");
+
+                entity.Property(e => e.Longitude).HasColumnName("longitude");
 
                 entity.Property(e => e.ModifiedBy)
                     .HasColumnName("modified_by")
@@ -441,6 +439,8 @@ namespace Thandizo.DAL.Models
                 entity.Property(e => e.DateModified)
                     .HasColumnName("date_modified")
                     .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.Document).HasColumnName("document");
 
                 entity.Property(e => e.ModifiedBy)
                     .HasColumnName("modified_by")
@@ -937,15 +937,9 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("date_modified")
                     .HasColumnType("timestamp(4) with time zone");
 
-                entity.Property(e => e.Latitude)
-                    .IsRequired()
-                    .HasColumnName("latitude")
-                    .HasMaxLength(50);
+                entity.Property(e => e.Latitude).HasColumnName("latitude");
 
-                entity.Property(e => e.Longitude)
-                    .IsRequired()
-                    .HasColumnName("longitude")
-                    .HasMaxLength(50);
+                entity.Property(e => e.Longitude).HasColumnName("longitude");
 
                 entity.Property(e => e.ModifiedBy)
                     .HasColumnName("modified_by")

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NpgsqlTypes;
 
 namespace Thandizo.DAL.Models
 {
@@ -17,6 +18,7 @@ namespace Thandizo.DAL.Models
         public DateTime? DateModified { get; set; }
         public string ModifiedBy { get; set; }
         public string RowAction { get; set; }
+        public NpgsqlTsVector Document { get; set; }
 
         public virtual ICollection<Patients> Patients { get; set; }
     }
