@@ -36,6 +36,8 @@ namespace Thandizo.DAL.Models
         public virtual DbSet<RegistrationSources> RegistrationSources { get; set; }
         public virtual DbSet<Resources> Resources { get; set; }
         public virtual DbSet<ResourcesAllocation> ResourcesAllocation { get; set; }
+        public virtual DbSet<ResponseTeamMappings> ResponseTeamMappings { get; set; }
+        public virtual DbSet<ResponseTeamMembers> ResponseTeamMembers { get; set; }
         public virtual DbSet<TransmissionClassifications> TransmissionClassifications { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1082,6 +1084,116 @@ namespace Thandizo.DAL.Models
                     .HasConstraintName("ra_resource_id_fk");
             });
 
+            modelBuilder.Entity<ResponseTeamMappings>(entity =>
+            {
+                entity.HasKey(e => e.MappingId)
+                    .HasName("rtmp_mapping_id_pk");
+
+                entity.ToTable("response_team_mappings");
+
+                entity.Property(e => e.MappingId)
+                    .HasColumnName("mapping_id")
+                    .HasDefaultValueSql("nextval('seq_team_member_mapping_id'::regclass)");
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("created_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.DateCreated)
+                    .HasColumnName("date_created")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.DateModified)
+                    .HasColumnName("date_modified")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.DistrictCode)
+                    .IsRequired()
+                    .HasColumnName("district_code")
+                    .HasMaxLength(3);
+
+                entity.Property(e => e.ModifiedBy)
+                    .HasColumnName("modified_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.RowAction)
+                    .IsRequired()
+                    .HasColumnName("row_action")
+                    .HasMaxLength(1);
+
+                entity.Property(e => e.TeamMemberId).HasColumnName("team_member_id");
+
+                entity.HasOne(d => d.DistrictCodeNavigation)
+                    .WithMany(p => p.ResponseTeamMappings)
+                    .HasForeignKey(d => d.DistrictCode)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("rtmp_district_code_fk");
+
+                entity.HasOne(d => d.TeamMember)
+                    .WithMany(p => p.ResponseTeamMappings)
+                    .HasForeignKey(d => d.TeamMemberId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("rtmp_team_member_id_fk");
+            });
+
+            modelBuilder.Entity<ResponseTeamMembers>(entity =>
+            {
+                entity.HasKey(e => e.TeamMemberId)
+                    .HasName("rtm_team_member_id_pk");
+
+                entity.ToTable("response_team_members");
+
+                entity.Property(e => e.TeamMemberId)
+                    .HasColumnName("team_member_id")
+                    .HasDefaultValueSql("nextval('seq_team_member_id'::regclass)");
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("created_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.DateCreated)
+                    .HasColumnName("date_created")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.DateModified)
+                    .HasColumnName("date_modified")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.EmailAddress)
+                    .HasColumnName("email_address")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.FirstName)
+                    .IsRequired()
+                    .HasColumnName("first_name")
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.ModifiedBy)
+                    .HasColumnName("modified_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.OtherNames)
+                    .HasColumnName("other_names")
+                    .HasMaxLength(60);
+
+                entity.Property(e => e.PhoneNumber)
+                    .IsRequired()
+                    .HasColumnName("phone_number")
+                    .HasMaxLength(15);
+
+                entity.Property(e => e.RowAction)
+                    .IsRequired()
+                    .HasColumnName("row_action")
+                    .HasMaxLength(1);
+
+                entity.Property(e => e.Surname)
+                    .IsRequired()
+                    .HasColumnName("surname")
+                    .HasMaxLength(30);
+            });
+
             modelBuilder.Entity<TransmissionClassifications>(entity =>
             {
                 entity.HasKey(e => e.ClassificationId)
@@ -1152,6 +1264,10 @@ namespace Thandizo.DAL.Models
             modelBuilder.HasSequence("seq_resource_allocation_id");
 
             modelBuilder.HasSequence("seq_resource_id");
+
+            modelBuilder.HasSequence("seq_team_member_id");
+
+            modelBuilder.HasSequence("seq_team_member_mapping_id");
 
             modelBuilder.HasSequence("seq_trans_classification_id");
 

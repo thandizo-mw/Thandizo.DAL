@@ -11,6 +11,7 @@ namespace Thandizo.DAL.Models
             DataCenters = new HashSet<DataCenters>();
             PatientLocationMovements = new HashSet<PatientLocationMovements>();
             Patients = new HashSet<Patients>();
+            ResponseTeamMappings = new HashSet<ResponseTeamMappings>();
         }
 
         public string DistrictCode { get; set; }
@@ -29,5 +30,6 @@ namespace Thandizo.DAL.Models
         public virtual ICollection<DataCenters> DataCenters { get; set; }
         public virtual ICollection<PatientLocationMovements> PatientLocationMovements { get; set; }
         public virtual ICollection<Patients> Patients { get; set; }
+        public virtual ICollection<ResponseTeamMappings> ResponseTeamMappings { get; set; }
     }
 }
