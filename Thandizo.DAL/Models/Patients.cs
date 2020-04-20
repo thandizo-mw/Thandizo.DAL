@@ -7,6 +7,7 @@ namespace Thandizo.DAL.Models
     {
         public Patients()
         {
+            ConfirmedPatients = new HashSet<ConfirmedPatients>();
             PatientDailyStatuses = new HashSet<PatientDailyStatuses>();
             PatientFacilityMovements = new HashSet<PatientFacilityMovements>();
             PatientHistory = new HashSet<PatientHistory>();
@@ -54,6 +55,7 @@ namespace Thandizo.DAL.Models
         public virtual PatientStatuses PatientStatus { get; set; }
         public virtual Countries ResidenceCountryCodeNavigation { get; set; }
         public virtual RegistrationSources Source { get; set; }
+        public virtual ICollection<ConfirmedPatients> ConfirmedPatients { get; set; }
         public virtual ICollection<PatientDailyStatuses> PatientDailyStatuses { get; set; }
         public virtual ICollection<PatientFacilityMovements> PatientFacilityMovements { get; set; }
         public virtual ICollection<PatientHistory> PatientHistory { get; set; }
