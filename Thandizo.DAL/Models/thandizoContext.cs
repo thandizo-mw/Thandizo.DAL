@@ -15,8 +15,7 @@ namespace Thandizo.DAL.Models
         {
         }
 
-        public virtual DbSet<ConfirmedPatients> ConfirmedPatients { get; set; }
-        public virtual DbSet<Countries> Countries { get; set; }        
+        public virtual DbSet<Countries> Countries { get; set; }
         public virtual DbSet<DataCenters> DataCenters { get; set; }
         public virtual DbSet<Districts> Districts { get; set; }
         public virtual DbSet<FacilityTypes> FacilityTypes { get; set; }
@@ -52,77 +51,6 @@ namespace Thandizo.DAL.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ConfirmedPatients>(entity =>
-            {
-                entity.HasKey(e => e.ConfirmedPatientId)
-                    .HasName("confirmed_patients_pkey");
-
-                entity.ToTable("confirmed_patients");
-
-                entity.Property(e => e.ConfirmedPatientId)
-                    .HasColumnName("confirmed_patient_id")
-                    .HasDefaultValueSql("nextval('seq_confirmed_patient_id'::regclass)");
-
-                entity.Property(e => e.Age).HasColumnName("age");
-
-                entity.Property(e => e.CountryCode)
-                    .HasColumnName("country_code")
-                    .HasMaxLength(3);
-
-                entity.Property(e => e.DateOfBirth)
-                    .HasColumnName("date_of_birth")
-                    .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.FirstName)
-                    .IsRequired()
-                    .HasColumnName("first_name")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.Gender)
-                    .IsRequired()
-                    .HasColumnName("gender")
-                    .HasMaxLength(1);
-
-                entity.Property(e => e.GuardianFirstName)
-                    .HasColumnName("guardian_first_name")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.GuardianPhoneNumber)
-                    .HasColumnName("guardian_phone_number")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.GuardianSurname)
-                    .HasColumnName("guardian_surname")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.IdentificationNumber)
-                    .IsRequired()
-                    .HasColumnName("identification_number")
-                    .HasMaxLength(25);
-
-                entity.Property(e => e.IdentificationType)
-                    .IsRequired()
-                    .HasColumnName("identification_type")
-                    .HasMaxLength(5);
-
-                entity.Property(e => e.PatientId).HasColumnName("patient_id");
-
-                entity.Property(e => e.PhoneNumber)
-                    .HasColumnName("phone_number")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.Surname)
-                    .IsRequired()
-                    .HasColumnName("surname")
-                    .HasMaxLength(40);
-
-                entity.HasOne(d => d.Patient)
-                    .WithMany(p => p.ConfirmedPatients)
-                    .HasForeignKey(d => d.PatientId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("patient_id_fk");
-            });
-
             modelBuilder.Entity<Countries>(entity =>
             {
                 entity.HasKey(e => e.CountryCode)
@@ -151,6 +79,10 @@ namespace Thandizo.DAL.Models
                 entity.Property(e => e.DateModified)
                     .HasColumnName("date_modified")
                     .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.ExternalReferenceNumber)
+                    .HasColumnName("external_reference_number")
+                    .HasMaxLength(15);
 
                 entity.Property(e => e.ModifiedBy)
                     .HasColumnName("modified_by")
@@ -479,6 +411,10 @@ namespace Thandizo.DAL.Models
                     .IsRequired()
                     .HasColumnName("description")
                     .HasMaxLength(30);
+
+                entity.Property(e => e.ExternalReferenceNumber)
+                    .HasColumnName("external_reference_number")
+                    .HasMaxLength(15);
 
                 entity.Property(e => e.ModifiedBy)
                     .HasColumnName("modified_by")
@@ -898,6 +834,8 @@ namespace Thandizo.DAL.Models
 
                 entity.Property(e => e.IsConfirmed).HasColumnName("is_confirmed");
 
+                entity.Property(e => e.IsSelfRegistered).HasColumnName("is_self_registered");
+
                 entity.Property(e => e.LastName)
                     .IsRequired()
                     .HasColumnName("last_name")
@@ -920,6 +858,18 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("nationality_code")
                     .HasMaxLength(5);
 
+                entity.Property(e => e.NextOfKinFirstName)
+                    .HasColumnName("next_of_kin_first_name")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.NextOfKinLastName)
+                    .HasColumnName("next_of_kin_last_name")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.NextOfKinPhoneNumber)
+                    .HasColumnName("next_of_kin_phone_number")
+                    .HasMaxLength(15);
+
                 entity.Property(e => e.OtherNames)
                     .HasColumnName("other_names")
                     .HasMaxLength(40);
@@ -933,6 +883,11 @@ namespace Thandizo.DAL.Models
                 entity.Property(e => e.PhysicalAddress)
                     .HasColumnName("physical_address")
                     .HasMaxLength(200);
+
+                entity.Property(e => e.ResidenceCountryCode)
+                    .IsRequired()
+                    .HasColumnName("residence_country_code")
+                    .HasMaxLength(3);
 
                 entity.Property(e => e.RowAction)
                     .IsRequired()
@@ -979,6 +934,12 @@ namespace Thandizo.DAL.Models
                     .HasForeignKey(d => d.PatientStatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("patient_status_id_fk");
+
+                entity.HasOne(d => d.ResidenceCountryCodeNavigation)
+                    .WithMany(p => p.Patients)
+                    .HasForeignKey(d => d.ResidenceCountryCode)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("pt_country_code_fk");
 
                 entity.HasOne(d => d.Source)
                     .WithMany(p => p.Patients)
@@ -1306,8 +1267,6 @@ namespace Thandizo.DAL.Models
             });
 
             modelBuilder.HasSequence("seq_center_id");
-
-            modelBuilder.HasSequence("seq_confirmed_patient_id");
 
             modelBuilder.HasSequence("seq_facility_movement_id");
 
