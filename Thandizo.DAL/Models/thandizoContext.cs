@@ -783,6 +783,12 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("date_modified")
                     .HasColumnType("timestamp(4) with time zone");
 
+                entity.Property(e => e.ExternalReferenceNumber)
+                    .HasColumnName("external_reference_number")
+                    .HasMaxLength(15);
+
+                entity.Property(e => e.IsAvailableForRegistration).HasColumnName("is_available_for_registration");
+
                 entity.Property(e => e.ModifiedBy)
                     .HasColumnName("modified_by")
                     .HasMaxLength(40);

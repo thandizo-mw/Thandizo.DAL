@@ -17,6 +17,8 @@ namespace Thandizo.DAL.Models
         public DateTime? DateModified { get; set; }
         public string ModifiedBy { get; set; }
         public string RowAction { get; set; }
+        public string ExternalReferenceNumber { get; set; }
+        public bool IsAvailableForRegistration { get; set; }
 
         public virtual ICollection<PatientDailyStatuses> PatientDailyStatuses { get; set; }
     }
