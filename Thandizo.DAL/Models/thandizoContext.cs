@@ -18,6 +18,7 @@ namespace Thandizo.DAL.Models
         public virtual DbSet<ConfirmedPatients> ConfirmedPatients { get; set; }
         public virtual DbSet<Countries> Countries { get; set; }
         public virtual DbSet<DataCenters> DataCenters { get; set; }
+        public virtual DbSet<DhisIntegrations> DhisIntegrations { get; set; }
         public virtual DbSet<Districts> Districts { get; set; }
         public virtual DbSet<FacilityTypes> FacilityTypes { get; set; }
         public virtual DbSet<HealthCareWorkers> HealthCareWorkers { get; set; }
@@ -224,6 +225,32 @@ namespace Thandizo.DAL.Models
                     .HasForeignKey(d => d.FacilityTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("facility_type_id_fk");
+            });
+
+            modelBuilder.Entity<DhisIntegrations>(entity =>
+            {
+                entity.HasKey(e => e.DhisAttributeId)
+                    .HasName("dhis_attribute_id_pk");
+
+                entity.ToTable("dhis_integrations");
+
+                entity.Property(e => e.DhisAttributeId)
+                    .HasColumnName("dhis_attribute_id")
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.DhisDisplayName)
+                    .HasColumnName("dhis_display_name")
+                    .HasMaxLength(60);
+
+                entity.Property(e => e.ModuleCode)
+                    .IsRequired()
+                    .HasColumnName("module_code")
+                    .HasMaxLength(3);
+
+                entity.Property(e => e.SourceColumnName)
+                    .IsRequired()
+                    .HasColumnName("source_column_name")
+                    .HasMaxLength(30);
             });
 
             modelBuilder.Entity<Districts>(entity =>

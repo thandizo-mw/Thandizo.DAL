@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Thandizo.DAL.Models
+{
+    public partial class DhisIntegrations
+    {
+        public string DhisAttributeId { get; set; }
+        public string DhisDisplayName { get; set; }
+        public string SourceColumnName { get; set; }
+        public string ModuleCode { get; set; }
+    }
+}
