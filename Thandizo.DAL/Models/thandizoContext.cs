@@ -18,7 +18,9 @@ namespace Thandizo.DAL.Models
         public virtual DbSet<ConfirmedPatients> ConfirmedPatients { get; set; }
         public virtual DbSet<Countries> Countries { get; set; }
         public virtual DbSet<DataCenters> DataCenters { get; set; }
-        public virtual DbSet<DhisIntegrations> DhisIntegrations { get; set; }
+        public virtual DbSet<DhisAttributes> DhisAttributes { get; set; }
+        public virtual DbSet<DhisOrganisationUnits> DhisOrganisationUnits { get; set; }
+        public virtual DbSet<DhisProgrammes> DhisProgrammes { get; set; }
         public virtual DbSet<Districts> Districts { get; set; }
         public virtual DbSet<FacilityTypes> FacilityTypes { get; set; }
         public virtual DbSet<HealthCareWorkers> HealthCareWorkers { get; set; }
@@ -227,12 +229,12 @@ namespace Thandizo.DAL.Models
                     .HasConstraintName("facility_type_id_fk");
             });
 
-            modelBuilder.Entity<DhisIntegrations>(entity =>
+            modelBuilder.Entity<DhisAttributes>(entity =>
             {
                 entity.HasKey(e => e.DhisAttributeId)
                     .HasName("dhis_attribute_id_pk");
 
-                entity.ToTable("dhis_integrations");
+                entity.ToTable("dhis_attributes");
 
                 entity.Property(e => e.DhisAttributeId)
                     .HasColumnName("dhis_attribute_id")
@@ -251,6 +253,43 @@ namespace Thandizo.DAL.Models
                     .IsRequired()
                     .HasColumnName("source_column_name")
                     .HasMaxLength(30);
+            });
+
+            modelBuilder.Entity<DhisOrganisationUnits>(entity =>
+            {
+                entity.HasKey(e => e.DhisOrgUnitId)
+                    .HasName("dhis_org_unit_id_pk");
+
+                entity.ToTable("dhis_organisation_units");
+
+                entity.Property(e => e.DhisOrgUnitId)
+                    .HasColumnName("dhis_org_unit_id")
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.DhisOrgUnitName)
+                    .HasColumnName("dhis_org_unit_name")
+                    .HasMaxLength(60);
+
+                entity.Property(e => e.DistrictCode)
+                    .IsRequired()
+                    .HasColumnName("district_code")
+                    .HasMaxLength(3);
+            });
+
+            modelBuilder.Entity<DhisProgrammes>(entity =>
+            {
+                entity.HasKey(e => e.DhisProgrammeId)
+                    .HasName("dhis_programme_id_pk");
+
+                entity.ToTable("dhis_programmes");
+
+                entity.Property(e => e.DhisProgrammeId)
+                    .HasColumnName("dhis_programme_id")
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.DhisProgrammeName)
+                    .HasColumnName("dhis_programme_name")
+                    .HasMaxLength(60);
             });
 
             modelBuilder.Entity<Districts>(entity =>
