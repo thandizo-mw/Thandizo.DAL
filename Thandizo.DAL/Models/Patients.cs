@@ -7,6 +7,8 @@ namespace Thandizo.DAL.Models
     {
         public Patients()
         {
+            ScheduledNotifications = new HashSet<ScheduledNotifications>();
+            Subscribers = new HashSet<Subscribers>();
             ConfirmedPatients = new HashSet<ConfirmedPatients>();
             PatientDailyStatuses = new HashSet<PatientDailyStatuses>();
             PatientFacilityMovements = new HashSet<PatientFacilityMovements>();
@@ -47,6 +49,8 @@ namespace Thandizo.DAL.Models
         public string ResidenceCountryCode { get; set; }
         public bool IsSelfRegistered { get; set; }
 
+        public virtual ICollection<ScheduledNotifications> ScheduledNotifications { get; set; }
+        public virtual ICollection<Subscribers> Subscribers { get; set; }
         public virtual TransmissionClassifications Classification { get; set; }
         public virtual DataCenters DataCenter { get; set; }
         public virtual Districts DistrictCodeNavigation { get; set; }
