@@ -11,14 +11,16 @@ namespace Thandizo.DAL.Models
         }
 
         public long NotificationId { get; set; }
+        public int ChannelId { get; set; }
         public string Message { get; set; }
-        public DateTimeOffset SendDate { get; set; }
+        public DateTime SendDate { get; set; }
         public string RowAction { get; set; }
         public string CreatedBy { get; set; }
-        public DateTimeOffset DateCreated { get; set; }
+        public DateTime DateCreated { get; set; }
         public string ModifiedBy { get; set; }
-        public DateTimeOffset? DateModified { get; set; }
+        public DateTime? DateModified { get; set; }
 
         public virtual ICollection<BulkNotificationLog> BulkNotificationLog { get; set; }
+        public virtual NotificationChannels Channel { get; set; }
     }
 }

@@ -8,9 +8,9 @@ namespace Thandizo.DAL.Models
         public long NotificationLogId { get; set; }
         public long NotificationId { get; set; }
         public string Status { get; set; }
-        public string RowAction { get; set; }
+        public string PhoneNumber { get; set; }
         public string CreatedBy { get; set; }
-        public DateTimeOffset DateCreated { get; set; }
+        public DateTime DateCreated { get; set; }
 
         public virtual BulkNotifications Notification { get; set; }
     }

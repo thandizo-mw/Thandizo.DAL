@@ -17,13 +17,13 @@ namespace Thandizo.DAL.Models
         public int TemplateId { get; set; }
         public bool IsActive { get; set; }
         public string Interval { get; set; }
-        public DateTimeOffset StartDate { get; set; }
+        public DateTime StartDate { get; set; }
         public int RuleId { get; set; }
         public string RowAction { get; set; }
         public string CreatedBy { get; set; }
-        public DateTimeOffset DateCreated { get; set; }
+        public DateTime DateCreated { get; set; }
         public string ModifiedBy { get; set; }
-        public DateTimeOffset? DateModified { get; set; }
+        public DateTime? DateModified { get; set; }
 
         public virtual NotificationChannels Channel { get; set; }
         public virtual Patients Patient { get; set; }

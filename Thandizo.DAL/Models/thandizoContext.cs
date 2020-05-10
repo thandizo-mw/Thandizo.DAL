@@ -71,6 +71,10 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("notification_log_id")
                     .HasDefaultValueSql("nextval('seq_bulk_notification_log_id'::regclass)");
 
+                entity.Property(e => e.PhoneNumber)
+                    .HasColumnName("phone_number")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
                     .HasColumnName("created_by")
@@ -78,15 +82,10 @@ namespace Thandizo.DAL.Models
 
                 entity.Property(e => e.DateCreated)
                     .HasColumnName("date_created")
-                    .HasColumnType("time(4) with time zone");
+                    .HasColumnType("timestamp(4) with time zone");
 
                 entity.Property(e => e.NotificationId).HasColumnName("notification_id");
-
-                entity.Property(e => e.RowAction)
-                    .IsRequired()
-                    .HasColumnName("row_action")
-                    .HasMaxLength(1);
-
+                
                 entity.Property(e => e.Status)
                     .IsRequired()
                     .HasColumnName("status")
@@ -115,13 +114,15 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("created_by")
                     .HasMaxLength(40);
 
+                entity.Property(e => e.ChannelId).HasColumnName("channel_id");
+
                 entity.Property(e => e.DateCreated)
                     .HasColumnName("date_created")
-                    .HasColumnType("time(4) with time zone");
+                    .HasColumnType("timestamp(4) with time zone");
 
                 entity.Property(e => e.DateModified)
                     .HasColumnName("date_modified")
-                    .HasColumnType("time(4) with time zone");
+                    .HasColumnType("timestamp(4) with time zone");
 
                 entity.Property(e => e.Message)
                     .IsRequired()
@@ -139,7 +140,13 @@ namespace Thandizo.DAL.Models
 
                 entity.Property(e => e.SendDate)
                     .HasColumnName("send_date")
-                    .HasColumnType("time(4) with time zone");
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.HasOne(d => d.Channel)
+                    .WithMany(p => p.BulkNotifications)
+                    .HasForeignKey(d => d.ChannelId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("channel_id_fk");
             });
 
             modelBuilder.Entity<NotificationChannels>(entity =>
@@ -165,15 +172,21 @@ namespace Thandizo.DAL.Models
 
                 entity.Property(e => e.DateCreated)
                     .HasColumnName("date_created")
-                    .HasColumnType("time(4) with time zone");
+                    .HasColumnType("timestamp(4) with time zone");
 
                 entity.Property(e => e.DateModified)
                     .HasColumnName("date_modified")
-                    .HasColumnType("time(4) with time zone");
+                    .HasColumnType("timestamp(4) with time zone");
 
                 entity.Property(e => e.ModifiedBy)
                     .HasColumnName("modified_by")
                     .HasMaxLength(40);
+
+                entity.Property(e => e.RowAction)
+                    .IsRequired()
+                    .HasColumnName("row_action")
+                    .HasMaxLength(1);
+
             });
 
             modelBuilder.Entity<NotificationTemplates>(entity =>
@@ -187,6 +200,19 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("template_id")
                     .HasDefaultValueSql("nextval('seq_notification_template_id'::regclass)");
 
+                entity.Property(e => e.CreatedBy)
+                   .IsRequired()
+                   .HasColumnName("created_by")
+                   .HasMaxLength(40);
+
+                entity.Property(e => e.DateCreated)
+                    .HasColumnName("date_created")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.DateModified)
+                    .HasColumnName("date_modified")
+                    .HasColumnType("timestamp(4) with time zone");
+
                 entity.Property(e => e.Interval).HasColumnName("interval");
 
                 entity.Property(e => e.IntervalUnit)
@@ -194,12 +220,22 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("interval_unit")
                     .HasMaxLength(1);
 
+                entity.Property(e => e.ModifiedBy)
+                    .HasColumnName("modified_by")
+                    .HasMaxLength(40);
+
                 entity.Property(e => e.RepeatCount).HasColumnName("repeat_count");
 
                 entity.Property(e => e.RowAction)
                     .IsRequired()
                     .HasColumnName("row_action")
                     .HasMaxLength(1);
+
+                entity.Property(e => e.TemplateName)
+                    .IsRequired()
+                    .HasColumnName("template_name")
+                    .HasMaxLength(20);
+
             });
 
             modelBuilder.Entity<Patients>(entity =>
@@ -354,11 +390,11 @@ namespace Thandizo.DAL.Models
 
                 entity.Property(e => e.DateCreated)
                     .HasColumnName("date_created")
-                    .HasColumnType("time(4) with time zone");
+                    .HasColumnType("timestamp(4) with time zone");
 
                 entity.Property(e => e.DateModified)
                     .HasColumnName("date_modified")
-                    .HasColumnType("time(4) with time zone");
+                    .HasColumnType("timestamp(4) with time zone");
 
                 entity.Property(e => e.EscalateTo)
                     .IsRequired()
@@ -377,7 +413,7 @@ namespace Thandizo.DAL.Models
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
-                    .HasMaxLength(20);
+                    .HasMaxLength(60);
 
                 entity.Property(e => e.RowAction)
                     .IsRequired()
@@ -403,15 +439,10 @@ namespace Thandizo.DAL.Models
 
                 entity.Property(e => e.DateCreated)
                     .HasColumnName("date_created")
-                    .HasColumnType("time(4) with time zone");
+                    .HasColumnType("timestamp(4) with time zone");
 
                 entity.Property(e => e.NotificationId).HasColumnName("notification_id");
-
-                entity.Property(e => e.RowAction)
-                    .IsRequired()
-                    .HasColumnName("row_action")
-                    .HasMaxLength(1);
-
+                
                 entity.Property(e => e.Status)
                     .IsRequired()
                     .HasColumnName("status")
@@ -1737,11 +1768,11 @@ namespace Thandizo.DAL.Models
 
                 entity.Property(e => e.DateCreated)
                     .HasColumnName("date_created")
-                    .HasColumnType("time(4) with time zone");
+                    .HasColumnType("timestamp(4) with time zone");
 
                 entity.Property(e => e.DateModified)
                     .HasColumnName("date_modified")
-                    .HasColumnType("time(4) with time zone");
+                    .HasColumnType("timestamp(4) with time zone");
 
                 entity.Property(e => e.Interval)
                     .IsRequired()
@@ -1768,7 +1799,7 @@ namespace Thandizo.DAL.Models
 
                 entity.Property(e => e.StartDate)
                     .HasColumnName("start_date")
-                    .HasColumnType("time(4) with time zone");
+                    .HasColumnType("timestamp(4) with time zone");
 
                 entity.Property(e => e.TemplateId).HasColumnName("template_id");
 
@@ -1799,13 +1830,13 @@ namespace Thandizo.DAL.Models
 
             modelBuilder.Entity<Subscribers>(entity =>
             {
-                entity.HasKey(e => e.SubcriberId)
+                entity.HasKey(e => e.SubscriberId)
                     .HasName("subscribers_pkey");
 
                 entity.ToTable("subscribers");
 
-                entity.Property(e => e.SubcriberId)
-                    .HasColumnName("subcriber_id")
+                entity.Property(e => e.SubscriberId)
+                    .HasColumnName("subscriber_id")
                     .HasDefaultValueSql("nextval('seq_subscriber_id'::regclass)");
 
                 entity.Property(e => e.ChannelId).HasColumnName("channel_id");
@@ -1817,20 +1848,18 @@ namespace Thandizo.DAL.Models
 
                 entity.Property(e => e.DateCreated)
                     .HasColumnName("date_created")
-                    .HasColumnType("time(4) with time zone");
+                    .HasColumnType("timestamp(4) with time zone");
 
                 entity.Property(e => e.DateModified)
                     .HasColumnName("date_modified")
-                    .HasColumnType("time(4) with time zone");
+                    .HasColumnType("timestamp(4) with time zone");
 
                 entity.Property(e => e.IsRegisteredPatient).HasColumnName("is_registered_patient");
 
                 entity.Property(e => e.ModifiedBy)
                     .HasColumnName("modified_by")
                     .HasMaxLength(40);
-
-                entity.Property(e => e.PatientId).HasColumnName("patient_id");
-
+                
                 entity.Property(e => e.PhoneNumber)
                     .IsRequired()
                     .HasColumnName("phone_number")
@@ -1846,11 +1875,6 @@ namespace Thandizo.DAL.Models
                     .HasForeignKey(d => d.ChannelId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("channel_id_fk");
-
-                entity.HasOne(d => d.Patient)
-                    .WithMany(p => p.Subscribers)
-                    .HasForeignKey(d => d.PatientId)
-                    .HasConstraintName("patient_id_fk");
             });
 
             modelBuilder.HasSequence("seq_bulk_notification_id");
