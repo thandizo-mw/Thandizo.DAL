@@ -10,7 +10,6 @@ namespace Thandizo.DAL.Models
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public DateTime DateCreated { get; set; }
-
-        public virtual ScheduledNotifications Notification { get; set; }
+        public string Recipient { get; set; }
     }
 }

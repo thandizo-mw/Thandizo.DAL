@@ -15,10 +15,10 @@ namespace Thandizo.DAL.Models
         public int ChannelId { get; set; }
         public string ChannelName { get; set; }
         public string CreatedBy { get; set; }
-        public DateTime DateCreated { get; set; }
         public string ModifiedBy { get; set; }
-        public DateTime? DateModified { get; set; }
         public string RowAction { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime? DateModified { get; set; }
 
         public virtual ICollection<BulkNotifications> BulkNotifications { get; set; }
         public virtual ICollection<ScheduledNotifications> ScheduledNotifications { get; set; }

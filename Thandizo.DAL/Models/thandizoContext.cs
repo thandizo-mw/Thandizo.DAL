@@ -17,17 +17,20 @@ namespace Thandizo.DAL.Models
 
         public virtual DbSet<BulkNotificationLog> BulkNotificationLog { get; set; }
         public virtual DbSet<BulkNotifications> BulkNotifications { get; set; }
-        public virtual DbSet<NotificationChannels> NotificationChannels { get; set; }
-        public virtual DbSet<NotificationTemplates> NotificationTemplates { get; set; }
         public virtual DbSet<ConfirmedPatients> ConfirmedPatients { get; set; }
         public virtual DbSet<Countries> Countries { get; set; }
         public virtual DbSet<DataCenters> DataCenters { get; set; }
+        public virtual DbSet<DhisIntegrations> DhisIntegrations { get; set; }
+        public virtual DbSet<DhisOrganisationUnits> DhisOrganisationUnits { get; set; }
+        public virtual DbSet<DhisProgrammes> DhisProgrammes { get; set; }
         public virtual DbSet<Districts> Districts { get; set; }
         public virtual DbSet<FacilityTypes> FacilityTypes { get; set; }
         public virtual DbSet<HealthCareWorkers> HealthCareWorkers { get; set; }
         public virtual DbSet<HealthFacilityResources> HealthFacilityResources { get; set; }
         public virtual DbSet<IdentificationTypes> IdentificationTypes { get; set; }
         public virtual DbSet<Nationalities> Nationalities { get; set; }
+        public virtual DbSet<NotificationChannels> NotificationChannels { get; set; }
+        public virtual DbSet<NotificationTemplates> NotificationTemplates { get; set; }
         public virtual DbSet<PatientDailyStatuses> PatientDailyStatuses { get; set; }
         public virtual DbSet<PatientFacilityMovements> PatientFacilityMovements { get; set; }
         public virtual DbSet<PatientHistory> PatientHistory { get; set; }
@@ -36,10 +39,6 @@ namespace Thandizo.DAL.Models
         public virtual DbSet<PatientSymptoms> PatientSymptoms { get; set; }
         public virtual DbSet<PatientTravelHistory> PatientTravelHistory { get; set; }
         public virtual DbSet<Patients> Patients { get; set; }
-        public virtual DbSet<ScheduledNotificationEscalationRules> ScheduledNotificationEscalationRules { get; set; }
-        public virtual DbSet<ScheduledNotificationLog> ScheduledNotificationLog { get; set; }
-        public virtual DbSet<ScheduledNotifications> ScheduledNotifications { get; set; }
-        public virtual DbSet<Subscribers> Subscribers { get; set; }
         public virtual DbSet<Regions> Regions { get; set; }
         public virtual DbSet<RegistrationMappings> RegistrationMappings { get; set; }
         public virtual DbSet<RegistrationSources> RegistrationSources { get; set; }
@@ -47,6 +46,10 @@ namespace Thandizo.DAL.Models
         public virtual DbSet<ResourcesAllocation> ResourcesAllocation { get; set; }
         public virtual DbSet<ResponseTeamMappings> ResponseTeamMappings { get; set; }
         public virtual DbSet<ResponseTeamMembers> ResponseTeamMembers { get; set; }
+        public virtual DbSet<ScheduledNotificationEscalationRules> ScheduledNotificationEscalationRules { get; set; }
+        public virtual DbSet<ScheduledNotificationLog> ScheduledNotificationLog { get; set; }
+        public virtual DbSet<ScheduledNotifications> ScheduledNotifications { get; set; }
+        public virtual DbSet<Subscribers> Subscribers { get; set; }
         public virtual DbSet<TransmissionClassifications> TransmissionClassifications { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -54,7 +57,7 @@ namespace Thandizo.DAL.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Database=thandizo;User Id=thandizo_dba;Password=admin2013+;");
+                optionsBuilder.UseNpgsql("Server=localhost;Port=5433;Database=thandizo_02;User Id=thandizo_dba_2;Password=admin100%;Pooling=true;CommandTimeout=60;Timeout=60;");
             }
         }
 
@@ -71,10 +74,6 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("notification_log_id")
                     .HasDefaultValueSql("nextval('seq_bulk_notification_log_id'::regclass)");
 
-                entity.Property(e => e.PhoneNumber)
-                    .HasColumnName("phone_number")
-                    .HasMaxLength(20);
-
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
                     .HasColumnName("created_by")
@@ -85,7 +84,11 @@ namespace Thandizo.DAL.Models
                     .HasColumnType("timestamp(4) with time zone");
 
                 entity.Property(e => e.NotificationId).HasColumnName("notification_id");
-                
+
+                entity.Property(e => e.PhoneNumber)
+                    .HasColumnName("phone_number")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.Status)
                     .IsRequired()
                     .HasColumnName("status")
@@ -109,12 +112,12 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("notification_id")
                     .HasDefaultValueSql("nextval('seq_bulk_notification_id'::regclass)");
 
+                entity.Property(e => e.ChannelId).HasColumnName("channel_id");
+
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
                     .HasColumnName("created_by")
                     .HasMaxLength(40);
-
-                entity.Property(e => e.ChannelId).HasColumnName("channel_id");
 
                 entity.Property(e => e.DateCreated)
                     .HasColumnName("date_created")
@@ -149,311 +152,6 @@ namespace Thandizo.DAL.Models
                     .HasConstraintName("channel_id_fk");
             });
 
-            modelBuilder.Entity<NotificationChannels>(entity =>
-            {
-                entity.HasKey(e => e.ChannelId)
-                    .HasName("notification_channels_pkey");
-
-                entity.ToTable("notification_channels");
-
-                entity.Property(e => e.ChannelId)
-                    .HasColumnName("channel_id")
-                    .HasDefaultValueSql("nextval('seq_channel_id'::regclass)");
-
-                entity.Property(e => e.ChannelName)
-                    .IsRequired()
-                    .HasColumnName("channel_name")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.CreatedBy)
-                    .IsRequired()
-                    .HasColumnName("created_by")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.DateCreated)
-                    .HasColumnName("date_created")
-                    .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.DateModified)
-                    .HasColumnName("date_modified")
-                    .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.ModifiedBy)
-                    .HasColumnName("modified_by")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.RowAction)
-                    .IsRequired()
-                    .HasColumnName("row_action")
-                    .HasMaxLength(1);
-
-            });
-
-            modelBuilder.Entity<NotificationTemplates>(entity =>
-            {
-                entity.HasKey(e => e.TemplateId)
-                    .HasName("template_pkey");
-
-                entity.ToTable("notification_templates");
-
-                entity.Property(e => e.TemplateId)
-                    .HasColumnName("template_id")
-                    .HasDefaultValueSql("nextval('seq_notification_template_id'::regclass)");
-
-                entity.Property(e => e.CreatedBy)
-                   .IsRequired()
-                   .HasColumnName("created_by")
-                   .HasMaxLength(40);
-
-                entity.Property(e => e.DateCreated)
-                    .HasColumnName("date_created")
-                    .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.DateModified)
-                    .HasColumnName("date_modified")
-                    .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.Interval).HasColumnName("interval");
-
-                entity.Property(e => e.IntervalUnit)
-                    .IsRequired()
-                    .HasColumnName("interval_unit")
-                    .HasMaxLength(1);
-
-                entity.Property(e => e.ModifiedBy)
-                    .HasColumnName("modified_by")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.RepeatCount).HasColumnName("repeat_count");
-
-                entity.Property(e => e.RowAction)
-                    .IsRequired()
-                    .HasColumnName("row_action")
-                    .HasMaxLength(1);
-
-                entity.Property(e => e.TemplateName)
-                    .IsRequired()
-                    .HasColumnName("template_name")
-                    .HasMaxLength(20);
-
-            });
-
-            modelBuilder.Entity<Patients>(entity =>
-            {
-                entity.HasKey(e => e.PatientId)
-                    .HasName("patients_pkey");
-
-                entity.ToTable("patients");
-
-                entity.HasIndex(e => e.PatientStatusId)
-                    .HasName("fki_patient_status_id_fk");
-
-                entity.Property(e => e.PatientId)
-                    .HasColumnName("patient_id")
-                    .HasDefaultValueSql("nextval('seq_patient_id'::regclass)");
-
-                entity.Property(e => e.ClassificationId).HasColumnName("classification_id");
-
-                entity.Property(e => e.CreatedBy)
-                    .IsRequired()
-                    .HasColumnName("created_by")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.DataCenterId).HasColumnName("data_center_id");
-
-                entity.Property(e => e.DateCreated)
-                    .HasColumnName("date_created")
-                    .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.DateModified)
-                    .HasColumnName("date_modified")
-                    .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.DateOfBirth)
-                    .HasColumnName("date_of_birth")
-                    .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.DistrictCode)
-                    .IsRequired()
-                    .HasColumnName("district_code")
-                    .HasMaxLength(3);
-
-                entity.Property(e => e.EmailAddress)
-                    .HasColumnName("email_address")
-                    .HasMaxLength(60);
-
-                entity.Property(e => e.FirstName)
-                    .IsRequired()
-                    .HasColumnName("first_name")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.Gender)
-                    .IsRequired()
-                    .HasColumnName("gender")
-                    .HasMaxLength(1);
-
-                entity.Property(e => e.HomeAddress)
-                    .IsRequired()
-                    .HasColumnName("home_address")
-                    .HasMaxLength(200);
-
-                entity.Property(e => e.IdentificationNumber)
-                    .IsRequired()
-                    .HasColumnName("identification_number")
-                    .HasMaxLength(25);
-
-                entity.Property(e => e.IdentificationTypeId).HasColumnName("identification_type_id");
-
-                entity.Property(e => e.IsConfirmed).HasColumnName("is_confirmed");
-
-                entity.Property(e => e.IsSelfRegistered).HasColumnName("is_self_registered");
-
-                entity.Property(e => e.LastName)
-                    .IsRequired()
-                    .HasColumnName("last_name")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.Latitude)
-                    .HasColumnName("latitude")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Longitude)
-                    .HasColumnName("longitude")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.ModifiedBy)
-                    .HasColumnName("modified_by")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.NationalityCode)
-                    .IsRequired()
-                    .HasColumnName("nationality_code")
-                    .HasMaxLength(5);
-
-                entity.Property(e => e.NextOfKinFirstName)
-                    .HasColumnName("next_of_kin_first_name")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.NextOfKinLastName)
-                    .HasColumnName("next_of_kin_last_name")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.NextOfKinPhoneNumber)
-                    .HasColumnName("next_of_kin_phone_number")
-                    .HasMaxLength(15);
-
-                entity.Property(e => e.OtherNames)
-                    .HasColumnName("other_names")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.PatientStatusId).HasColumnName("patient_status_id");
-
-                entity.Property(e => e.PhoneNumber)
-                    .HasColumnName("phone_number")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.PhysicalAddress)
-                    .HasColumnName("physical_address")
-                    .HasMaxLength(200);
-
-                entity.Property(e => e.ResidenceCountryCode)
-                    .IsRequired()
-                    .HasColumnName("residence_country_code")
-                    .HasMaxLength(3);
-
-                entity.Property(e => e.RowAction)
-                    .IsRequired()
-                    .HasColumnName("row_action")
-                    .HasMaxLength(1);
-
-                entity.Property(e => e.SourceId)
-                    .IsRequired()
-                    .HasColumnName("source_id")
-                    .HasMaxLength(2);
-            });
-
-            modelBuilder.Entity<ScheduledNotificationEscalationRules>(entity =>
-            {
-                entity.HasKey(e => e.RuleId)
-                    .HasName("scheduled_notification_esclaation_rules_pkey");
-
-                entity.ToTable("scheduled_notification_escalation_rules");
-
-                entity.Property(e => e.RuleId)
-                    .HasColumnName("rule_id")
-                    .HasDefaultValueSql("nextval('seq_rule_id'::regclass)");
-
-                entity.Property(e => e.CreatedBy)
-                    .IsRequired()
-                    .HasColumnName("created_by")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.DateCreated)
-                    .HasColumnName("date_created")
-                    .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.DateModified)
-                    .HasColumnName("date_modified")
-                    .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.EscalateTo)
-                    .IsRequired()
-                    .HasColumnName("escalate_to")
-                    .HasMaxLength(200);
-
-                entity.Property(e => e.Message)
-                    .IsRequired()
-                    .HasColumnName("message")
-                    .HasMaxLength(1000);
-
-                entity.Property(e => e.ModifiedBy)
-                    .HasColumnName("modified_by")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasColumnName("name")
-                    .HasMaxLength(60);
-
-                entity.Property(e => e.RowAction)
-                    .IsRequired()
-                    .HasColumnName("row_action")
-                    .HasMaxLength(1);
-            });
-
-            modelBuilder.Entity<ScheduledNotificationLog>(entity =>
-            {
-                entity.HasKey(e => e.NotificationLogId)
-                    .HasName("scheduled_notifications_log_pkey");
-
-                entity.ToTable("scheduled_notification_log");
-
-                entity.Property(e => e.NotificationLogId)
-                    .HasColumnName("notification_log_id")
-                    .HasDefaultValueSql("nextval('seq_notification_log_id'::regclass)");
-
-                entity.Property(e => e.CreatedBy)
-                    .IsRequired()
-                    .HasColumnName("created_by")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.DateCreated)
-                    .HasColumnName("date_created")
-                    .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.NotificationId).HasColumnName("notification_id");
-                
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasColumnName("status")
-                    .HasMaxLength(1);
-
-                entity.HasOne(d => d.Notification)
-                    .WithMany(p => p.ScheduledNotificationLog)
-                    .HasForeignKey(d => d.NotificationId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("notification_id_fk");
-            });
             modelBuilder.Entity<ConfirmedPatients>(entity =>
             {
                 entity.HasKey(e => e.ConfirmedPatientId)
@@ -628,12 +326,79 @@ namespace Thandizo.DAL.Models
                     .HasConstraintName("facility_type_id_fk");
             });
 
+            modelBuilder.Entity<DhisIntegrations>(entity =>
+            {
+                entity.HasKey(e => e.DhisAttributeId)
+                    .HasName("dhis_attribute_id_pk");
+
+                entity.ToTable("dhis_integrations");
+
+                entity.Property(e => e.DhisAttributeId)
+                    .HasColumnName("dhis_attribute_id")
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.DhisDisplayName)
+                    .HasColumnName("dhis_display_name")
+                    .HasMaxLength(60);
+
+                entity.Property(e => e.ModuleCode)
+                    .IsRequired()
+                    .HasColumnName("module_code")
+                    .HasMaxLength(3);
+
+                entity.Property(e => e.SourceColumnName)
+                    .IsRequired()
+                    .HasColumnName("source_column_name")
+                    .HasMaxLength(30);
+            });
+
+            modelBuilder.Entity<DhisOrganisationUnits>(entity =>
+            {
+                entity.HasKey(e => e.DhisOrgUnitId)
+                    .HasName("dhis_org_unit_id_pk");
+
+                entity.ToTable("dhis_organisation_units");
+
+                entity.Property(e => e.DhisOrgUnitId)
+                    .HasColumnName("dhis_org_unit_id")
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.DhisOrgUnitName)
+                    .HasColumnName("dhis_org_unit_name")
+                    .HasMaxLength(60);
+
+                entity.Property(e => e.DistrictCode)
+                    .IsRequired()
+                    .HasColumnName("district_code")
+                    .HasMaxLength(3);
+            });
+
+            modelBuilder.Entity<DhisProgrammes>(entity =>
+            {
+                entity.HasKey(e => e.DhisProgrammeId)
+                    .HasName("dhis_programme_id_pk");
+
+                entity.ToTable("dhis_programmes");
+
+                entity.Property(e => e.DhisProgrammeId)
+                    .HasColumnName("dhis_programme_id")
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.DhisProgrammeName)
+                    .HasColumnName("dhis_programme_name")
+                    .HasMaxLength(60);
+            });
+
             modelBuilder.Entity<Districts>(entity =>
             {
                 entity.HasKey(e => e.DistrictCode)
                     .HasName("districts_pkey");
 
                 entity.ToTable("districts");
+
+                entity.HasIndex(e => e.Document)
+                    .HasName("district_document_idx")
+                    .HasMethod("gin");
 
                 entity.Property(e => e.DistrictCode)
                     .HasColumnName("district_code")
@@ -779,7 +544,6 @@ namespace Thandizo.DAL.Models
                     .HasMaxLength(40);
 
                 entity.Property(e => e.OtherNames)
-                    .IsRequired()
                     .HasColumnName("other_names")
                     .HasMaxLength(40);
 
@@ -907,6 +671,10 @@ namespace Thandizo.DAL.Models
 
                 entity.ToTable("nationalities");
 
+                entity.HasIndex(e => e.Document)
+                    .HasName("document_idx")
+                    .HasMethod("gin");
+
                 entity.Property(e => e.NationalityCode)
                     .HasColumnName("nationality_code")
                     .HasMaxLength(5);
@@ -939,6 +707,93 @@ namespace Thandizo.DAL.Models
                     .IsRequired()
                     .HasColumnName("row_action")
                     .HasMaxLength(1);
+            });
+
+            modelBuilder.Entity<NotificationChannels>(entity =>
+            {
+                entity.HasKey(e => e.ChannelId)
+                    .HasName("notification_channels_pkey");
+
+                entity.ToTable("notification_channels");
+
+                entity.Property(e => e.ChannelId)
+                    .HasColumnName("channel_id")
+                    .HasDefaultValueSql("nextval('seq_channel_id'::regclass)");
+
+                entity.Property(e => e.ChannelName)
+                    .IsRequired()
+                    .HasColumnName("channel_name")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("created_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.DateCreated)
+                    .HasColumnName("date_created")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.DateModified)
+                    .HasColumnName("date_modified")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.ModifiedBy)
+                    .HasColumnName("modified_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.RowAction)
+                    .IsRequired()
+                    .HasColumnName("row_action")
+                    .HasMaxLength(1);
+            });
+
+            modelBuilder.Entity<NotificationTemplates>(entity =>
+            {
+                entity.HasKey(e => e.TemplateId)
+                    .HasName("template_pkey");
+
+                entity.ToTable("notification_templates");
+
+                entity.Property(e => e.TemplateId)
+                    .HasColumnName("template_id")
+                    .HasDefaultValueSql("nextval('seq_notification_template_id'::regclass)");
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("created_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.DateCreated)
+                    .HasColumnName("date_created")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.DateModified)
+                    .HasColumnName("date_modified")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.Interval).HasColumnName("interval");
+
+                entity.Property(e => e.IntervalUnit)
+                    .IsRequired()
+                    .HasColumnName("interval_unit")
+                    .HasMaxLength(1);
+
+                entity.Property(e => e.ModifiedBy)
+                    .HasColumnName("modified_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.RepeatCount).HasColumnName("repeat_count");
+
+                entity.Property(e => e.RowAction)
+                    .IsRequired()
+                    .HasColumnName("row_action")
+                    .HasMaxLength(1);
+
+                entity.Property(e => e.TemplateName)
+                    .IsRequired()
+                    .HasColumnName("template_name")
+                    .HasMaxLength(20);
             });
 
             modelBuilder.Entity<PatientDailyStatuses>(entity =>
@@ -984,14 +839,9 @@ namespace Thandizo.DAL.Models
 
             modelBuilder.Entity<PatientFacilityMovements>(entity =>
             {
-                entity.HasKey(e => e.MovementId)
-                    .HasName("patient_facility_movement_pkey");
+                entity.HasNoKey();
 
                 entity.ToTable("patient_facility_movements");
-
-                entity.Property(e => e.MovementId)
-                    .HasColumnName("movement_id")
-                    .HasDefaultValueSql("nextval('seq_facility_movement_id'::regclass)");
 
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
@@ -1008,24 +858,28 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("movement_date")
                     .HasColumnType("timestamp(4) with time zone");
 
+                entity.Property(e => e.MovementId)
+                    .HasColumnName("movement_id")
+                    .HasDefaultValueSql("nextval('seq_facility_movement_id'::regclass)");
+
                 entity.Property(e => e.PatientId).HasColumnName("patient_id");
 
                 entity.Property(e => e.ToDataCenterId).HasColumnName("to_data_center_id");
 
                 entity.HasOne(d => d.FromDataCenter)
-                    .WithMany(p => p.PatientFacilityMovementsFromDataCenter)
+                    .WithMany()
                     .HasForeignKey(d => d.FromDataCenterId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("from_data_center_id_fk");
 
                 entity.HasOne(d => d.Patient)
-                    .WithMany(p => p.PatientFacilityMovements)
+                    .WithMany()
                     .HasForeignKey(d => d.PatientId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("patient_id");
 
                 entity.HasOne(d => d.ToDataCenter)
-                    .WithMany(p => p.PatientFacilityMovementsToDataCenter)
+                    .WithMany()
                     .HasForeignKey(d => d.ToDataCenterId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("to_data_center_id_fk");
@@ -1033,14 +887,9 @@ namespace Thandizo.DAL.Models
 
             modelBuilder.Entity<PatientHistory>(entity =>
             {
-                entity.HasKey(e => e.HistoryId)
-                    .HasName("patient_history_pkey");
+                entity.HasNoKey();
 
                 entity.ToTable("patient_history");
-
-                entity.Property(e => e.HistoryId)
-                    .HasColumnName("history_id")
-                    .HasDefaultValueSql("nextval('seq_patient_history_id'::regclass)");
 
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
@@ -1055,18 +904,22 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("date_reported")
                     .HasColumnType("timestamp(4) with time zone");
 
+                entity.Property(e => e.HistoryId)
+                    .HasColumnName("history_id")
+                    .HasDefaultValueSql("nextval('seq_patient_history_id'::regclass)");
+
                 entity.Property(e => e.PatientId).HasColumnName("patient_id");
 
                 entity.Property(e => e.PatientStatusId).HasColumnName("patient_status_id");
 
                 entity.HasOne(d => d.Patient)
-                    .WithMany(p => p.PatientHistory)
+                    .WithMany()
                     .HasForeignKey(d => d.PatientId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("patient_id_fk");
 
                 entity.HasOne(d => d.PatientStatus)
-                    .WithMany(p => p.PatientHistory)
+                    .WithMany()
                     .HasForeignKey(d => d.PatientStatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("patient_status_id_fk");
@@ -1074,14 +927,9 @@ namespace Thandizo.DAL.Models
 
             modelBuilder.Entity<PatientLocationMovements>(entity =>
             {
-                entity.HasKey(e => e.MovementId)
-                    .HasName("patient_movements_pkey");
+                entity.HasNoKey();
 
                 entity.ToTable("patient_location_movements");
-
-                entity.Property(e => e.MovementId)
-                    .HasColumnName("movement_id")
-                    .HasDefaultValueSql("nextval('seq_location_movement_id'::regclass)");
 
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
@@ -1105,16 +953,20 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("movement_date")
                     .HasColumnType("timestamp(4) with time zone");
 
+                entity.Property(e => e.MovementId)
+                    .HasColumnName("movement_id")
+                    .HasDefaultValueSql("nextval('seq_location_movement_id'::regclass)");
+
                 entity.Property(e => e.PatientId).HasColumnName("patient_id");
 
                 entity.HasOne(d => d.DistrictCodeNavigation)
-                    .WithMany(p => p.PatientLocationMovements)
+                    .WithMany()
                     .HasForeignKey(d => d.DistrictCode)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("district_code_fk");
 
                 entity.HasOne(d => d.Patient)
-                    .WithMany(p => p.PatientLocationMovements)
+                    .WithMany()
                     .HasForeignKey(d => d.PatientId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("patient_id_fk");
@@ -1515,7 +1367,7 @@ namespace Thandizo.DAL.Models
 
                 entity.Property(e => e.ResourceId)
                     .HasColumnName("resource_id")
-                    .ValueGeneratedNever();
+                    .HasDefaultValueSql("nextval('seq_resource_id'::regclass)");
 
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
@@ -1707,21 +1559,16 @@ namespace Thandizo.DAL.Models
                     .HasMaxLength(30);
             });
 
-            modelBuilder.Entity<TransmissionClassifications>(entity =>
+            modelBuilder.Entity<ScheduledNotificationEscalationRules>(entity =>
             {
-                entity.HasKey(e => e.ClassificationId)
-                    .HasName("transmission_classifications_pkey");
+                entity.HasKey(e => e.RuleId)
+                    .HasName("scheduled_notification_esclaation_rules_pkey");
 
-                entity.ToTable("transmission_classifications");
+                entity.ToTable("scheduled_notification_escalation_rules");
 
-                entity.Property(e => e.ClassificationId)
-                    .HasColumnName("classification_id")
-                    .HasDefaultValueSql("nextval('seq_trans_classification_id'::regclass)");
-
-                entity.Property(e => e.ClassificationName)
-                    .IsRequired()
-                    .HasColumnName("classification_name")
-                    .HasMaxLength(40);
+                entity.Property(e => e.RuleId)
+                    .HasColumnName("rule_id")
+                    .HasDefaultValueSql("nextval('seq_rule_id'::regclass)");
 
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
@@ -1736,13 +1583,60 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("date_modified")
                     .HasColumnType("timestamp(4) with time zone");
 
+                entity.Property(e => e.EscalateTo)
+                    .IsRequired()
+                    .HasColumnName("escalate_to")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.Message)
+                    .IsRequired()
+                    .HasColumnName("message")
+                    .HasMaxLength(1000);
+
                 entity.Property(e => e.ModifiedBy)
                     .HasColumnName("modified_by")
                     .HasMaxLength(40);
 
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(60);
+
                 entity.Property(e => e.RowAction)
                     .IsRequired()
                     .HasColumnName("row_action")
+                    .HasMaxLength(1);
+            });
+
+            modelBuilder.Entity<ScheduledNotificationLog>(entity =>
+            {
+                entity.HasKey(e => e.NotificationLogId)
+                    .HasName("scheduled_notifications_log_pkey");
+
+                entity.ToTable("scheduled_notification_log");
+
+                entity.Property(e => e.NotificationLogId)
+                    .HasColumnName("notification_log_id")
+                    .HasDefaultValueSql("nextval('seq_notification_log_id'::regclass)");
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("created_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.DateCreated)
+                    .HasColumnName("date_created")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.NotificationId).HasColumnName("notification_id");
+
+                entity.Property(e => e.Recipient)
+                    .HasColumnName("recipient")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasColumnName("status")
                     .HasMaxLength(1);
             });
 
@@ -1756,8 +1650,6 @@ namespace Thandizo.DAL.Models
                 entity.Property(e => e.NotificationId)
                     .HasColumnName("notification_id")
                     .HasDefaultValueSql("nextval('seq_scheduled_notification_id'::regclass)");
-
-                entity.Property(e => e.IsActive).HasColumnName("is_active");
 
                 entity.Property(e => e.ChannelId).HasColumnName("channel_id");
 
@@ -1779,6 +1671,8 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("interval")
                     .HasMaxLength(1);
 
+                entity.Property(e => e.IsActive).HasColumnName("is_active");
+
                 entity.Property(e => e.Message)
                     .IsRequired()
                     .HasColumnName("message")
@@ -1788,7 +1682,9 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("modified_by")
                     .HasMaxLength(40);
 
-                entity.Property(e => e.PatientId).HasColumnName("patient_id");
+                entity.Property(e => e.Recipients)
+                    .HasColumnName("recipients")
+                    .HasColumnType("character varying[]");
 
                 entity.Property(e => e.RowAction)
                     .IsRequired()
@@ -1808,12 +1704,6 @@ namespace Thandizo.DAL.Models
                     .HasForeignKey(d => d.ChannelId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("channel_id_fk");
-
-                entity.HasOne(d => d.Patient)
-                    .WithMany(p => p.ScheduledNotifications)
-                    .HasForeignKey(d => d.PatientId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("patient_id_fk");
 
                 entity.HasOne(d => d.Rule)
                     .WithMany(p => p.ScheduledNotifications)
@@ -1859,7 +1749,7 @@ namespace Thandizo.DAL.Models
                 entity.Property(e => e.ModifiedBy)
                     .HasColumnName("modified_by")
                     .HasMaxLength(40);
-                
+
                 entity.Property(e => e.PhoneNumber)
                     .IsRequired()
                     .HasColumnName("phone_number")
@@ -1875,6 +1765,45 @@ namespace Thandizo.DAL.Models
                     .HasForeignKey(d => d.ChannelId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("channel_id_fk");
+            });
+
+            modelBuilder.Entity<TransmissionClassifications>(entity =>
+            {
+                entity.HasKey(e => e.ClassificationId)
+                    .HasName("transmission_classifications_pkey");
+
+                entity.ToTable("transmission_classifications");
+
+                entity.Property(e => e.ClassificationId)
+                    .HasColumnName("classification_id")
+                    .HasDefaultValueSql("nextval('seq_trans_classification_id'::regclass)");
+
+                entity.Property(e => e.ClassificationName)
+                    .IsRequired()
+                    .HasColumnName("classification_name")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("created_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.DateCreated)
+                    .HasColumnName("date_created")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.DateModified)
+                    .HasColumnName("date_modified")
+                    .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.ModifiedBy)
+                    .HasColumnName("modified_by")
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.RowAction)
+                    .IsRequired()
+                    .HasColumnName("row_action")
+                    .HasMaxLength(1);
             });
 
             modelBuilder.HasSequence("seq_bulk_notification_id");

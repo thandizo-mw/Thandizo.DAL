@@ -7,7 +7,6 @@ namespace Thandizo.DAL.Models
     {
         public PatientStatuses()
         {
-            PatientHistory = new HashSet<PatientHistory>();
             Patients = new HashSet<Patients>();
             ResourcesAllocation = new HashSet<ResourcesAllocation>();
         }
@@ -21,7 +20,6 @@ namespace Thandizo.DAL.Models
         public string ModifiedBy { get; set; }
         public string RowAction { get; set; }
 
-        public virtual ICollection<PatientHistory> PatientHistory { get; set; }
         public virtual ICollection<Patients> Patients { get; set; }
         public virtual ICollection<ResourcesAllocation> ResourcesAllocation { get; set; }
     }

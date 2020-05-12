@@ -9,8 +9,6 @@ namespace Thandizo.DAL.Models
         {
             HealthCareWorkers = new HashSet<HealthCareWorkers>();
             HealthFacilityResources = new HashSet<HealthFacilityResources>();
-            PatientFacilityMovementsFromDataCenter = new HashSet<PatientFacilityMovements>();
-            PatientFacilityMovementsToDataCenter = new HashSet<PatientFacilityMovements>();
             Patients = new HashSet<Patients>();
         }
 
@@ -29,8 +27,6 @@ namespace Thandizo.DAL.Models
         public virtual FacilityTypes FacilityType { get; set; }
         public virtual ICollection<HealthCareWorkers> HealthCareWorkers { get; set; }
         public virtual ICollection<HealthFacilityResources> HealthFacilityResources { get; set; }
-        public virtual ICollection<PatientFacilityMovements> PatientFacilityMovementsFromDataCenter { get; set; }
-        public virtual ICollection<PatientFacilityMovements> PatientFacilityMovementsToDataCenter { get; set; }
         public virtual ICollection<Patients> Patients { get; set; }
     }
 }

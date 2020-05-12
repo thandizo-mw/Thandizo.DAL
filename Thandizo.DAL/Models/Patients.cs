@@ -7,12 +7,8 @@ namespace Thandizo.DAL.Models
     {
         public Patients()
         {
-            ScheduledNotifications = new HashSet<ScheduledNotifications>();
             ConfirmedPatients = new HashSet<ConfirmedPatients>();
             PatientDailyStatuses = new HashSet<PatientDailyStatuses>();
-            PatientFacilityMovements = new HashSet<PatientFacilityMovements>();
-            PatientHistory = new HashSet<PatientHistory>();
-            PatientLocationMovements = new HashSet<PatientLocationMovements>();
             PatientTravelHistory = new HashSet<PatientTravelHistory>();
         }
 
@@ -48,7 +44,6 @@ namespace Thandizo.DAL.Models
         public string ResidenceCountryCode { get; set; }
         public bool IsSelfRegistered { get; set; }
 
-        public virtual ICollection<ScheduledNotifications> ScheduledNotifications { get; set; }
         public virtual TransmissionClassifications Classification { get; set; }
         public virtual DataCenters DataCenter { get; set; }
         public virtual Districts DistrictCodeNavigation { get; set; }
@@ -59,9 +54,6 @@ namespace Thandizo.DAL.Models
         public virtual RegistrationSources Source { get; set; }
         public virtual ICollection<ConfirmedPatients> ConfirmedPatients { get; set; }
         public virtual ICollection<PatientDailyStatuses> PatientDailyStatuses { get; set; }
-        public virtual ICollection<PatientFacilityMovements> PatientFacilityMovements { get; set; }
-        public virtual ICollection<PatientHistory> PatientHistory { get; set; }
-        public virtual ICollection<PatientLocationMovements> PatientLocationMovements { get; set; }
         public virtual ICollection<PatientTravelHistory> PatientTravelHistory { get; set; }
     }
 }
