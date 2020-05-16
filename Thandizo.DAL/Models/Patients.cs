@@ -46,6 +46,7 @@ namespace Thandizo.DAL.Models
         public string NextOfKinPhoneNumber { get; set; }
         public string ResidenceCountryCode { get; set; }
         public bool IsSelfRegistered { get; set; }
+        public string ExternalReferenceNumber { get; set; }
 
         public virtual TransmissionClassifications Classification { get; set; }
         public virtual DataCenters DataCenter { get; set; }

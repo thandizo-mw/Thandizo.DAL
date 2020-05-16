@@ -954,6 +954,10 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("email_address")
                     .HasMaxLength(60);
 
+                entity.Property(e => e.ExternalReferenceNumber)
+                    .HasColumnName("external_reference_number")
+                    .HasMaxLength(25);
+
                 entity.Property(e => e.FirstName)
                     .IsRequired()
                     .HasColumnName("first_name")
