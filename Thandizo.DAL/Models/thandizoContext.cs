@@ -287,11 +287,17 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("dhis_programme_id")
                     .HasMaxLength(30);
 
+                entity.Property(e => e.DhisProgramStage)
+                    .IsRequired()
+                    .HasColumnName("dhis_program_stage")
+                    .HasMaxLength(30);
+
                 entity.Property(e => e.DhisProgrammeName)
                     .HasColumnName("dhis_programme_name")
                     .HasMaxLength(60);
 
                 entity.Property(e => e.DhisTrackedEntityId)
+                    .IsRequired()
                     .HasColumnName("dhis_tracked_entity_id")
                     .HasMaxLength(30);
             });

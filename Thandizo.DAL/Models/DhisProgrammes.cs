@@ -8,5 +8,6 @@ namespace Thandizo.DAL.Models
         public string DhisProgrammeId { get; set; }
         public string DhisProgrammeName { get; set; }
         public string DhisTrackedEntityId { get; set; }
+        public string DhisProgramStage { get; set; }
     }
 }
