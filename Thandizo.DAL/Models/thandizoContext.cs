@@ -290,6 +290,10 @@ namespace Thandizo.DAL.Models
                 entity.Property(e => e.DhisProgrammeName)
                     .HasColumnName("dhis_programme_name")
                     .HasMaxLength(60);
+
+                entity.Property(e => e.DhisTrackedEntityId)
+                    .HasColumnName("dhis_tracked_entity_id")
+                    .HasMaxLength(30);
             });
 
             modelBuilder.Entity<Districts>(entity =>
