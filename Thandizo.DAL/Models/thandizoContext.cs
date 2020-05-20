@@ -20,7 +20,7 @@ namespace Thandizo.DAL.Models
         public virtual DbSet<DataCenters> DataCenters { get; set; }
         public virtual DbSet<DhisAttributes> DhisAttributes { get; set; }
         public virtual DbSet<DhisOrganisationUnits> DhisOrganisationUnits { get; set; }
-        public virtual DbSet<DhisProgrammes> DhisProgrammes { get; set; }
+        public virtual DbSet<DhisPrograms> DhisPrograms { get; set; }
         public virtual DbSet<Districts> Districts { get; set; }
         public virtual DbSet<FacilityTypes> FacilityTypes { get; set; }
         public virtual DbSet<HealthCareWorkers> HealthCareWorkers { get; set; }
@@ -276,25 +276,25 @@ namespace Thandizo.DAL.Models
                     .HasMaxLength(3);
             });
 
-            modelBuilder.Entity<DhisProgrammes>(entity =>
+            modelBuilder.Entity<DhisPrograms>(entity =>
             {
-                entity.HasKey(e => e.DhisProgrammeId)
+                entity.HasKey(e => e.DhisProgramId)
                     .HasName("dhis_programme_id_pk");
 
-                entity.ToTable("dhis_programmes");
+                entity.ToTable("dhis_programs");
 
-                entity.Property(e => e.DhisProgrammeId)
-                    .HasColumnName("dhis_programme_id")
+                entity.Property(e => e.DhisProgramId)
+                    .HasColumnName("dhis_program_id")
                     .HasMaxLength(30);
+
+                entity.Property(e => e.DhisProgramName)
+                    .HasColumnName("dhis_program_name")
+                    .HasMaxLength(60);
 
                 entity.Property(e => e.DhisProgramStage)
                     .IsRequired()
                     .HasColumnName("dhis_program_stage")
                     .HasMaxLength(30);
-
-                entity.Property(e => e.DhisProgrammeName)
-                    .HasColumnName("dhis_programme_name")
-                    .HasMaxLength(60);
 
                 entity.Property(e => e.DhisTrackedEntityId)
                     .IsRequired()
