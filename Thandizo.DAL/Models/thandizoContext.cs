@@ -20,9 +20,9 @@ namespace Thandizo.DAL.Models
         public virtual DbSet<ConfirmedPatients> ConfirmedPatients { get; set; }
         public virtual DbSet<Countries> Countries { get; set; }
         public virtual DbSet<DataCenters> DataCenters { get; set; }
-        public virtual DbSet<DhisIntegrations> DhisIntegrations { get; set; }
+        public virtual DbSet<DhisAttributes> DhisAttributes { get; set; }
         public virtual DbSet<DhisOrganisationUnits> DhisOrganisationUnits { get; set; }
-        public virtual DbSet<DhisProgrammes> DhisProgrammes { get; set; }
+        public virtual DbSet<DhisPrograms> DhisPrograms { get; set; }
         public virtual DbSet<Districts> Districts { get; set; }
         public virtual DbSet<FacilityTypes> FacilityTypes { get; set; }
         public virtual DbSet<HealthCareWorkers> HealthCareWorkers { get; set; }
@@ -57,7 +57,7 @@ namespace Thandizo.DAL.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseNpgsql("Server=localhost;Port=5433;Database=thandizo_02;User Id=thandizo_dba_2;Password=admin100%;Pooling=true;CommandTimeout=60;Timeout=60;");
+                optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Database=thandizo;User Id=thandizo_dba;Password=admin2013+;");
             }
         }
 
@@ -326,12 +326,12 @@ namespace Thandizo.DAL.Models
                     .HasConstraintName("facility_type_id_fk");
             });
 
-            modelBuilder.Entity<DhisIntegrations>(entity =>
+            modelBuilder.Entity<DhisAttributes>(entity =>
             {
                 entity.HasKey(e => e.DhisAttributeId)
                     .HasName("dhis_attribute_id_pk");
 
-                entity.ToTable("dhis_integrations");
+                entity.ToTable("dhis_attributes");
 
                 entity.Property(e => e.DhisAttributeId)
                     .HasColumnName("dhis_attribute_id")
@@ -373,20 +373,30 @@ namespace Thandizo.DAL.Models
                     .HasMaxLength(3);
             });
 
-            modelBuilder.Entity<DhisProgrammes>(entity =>
+            modelBuilder.Entity<DhisPrograms>(entity =>
             {
-                entity.HasKey(e => e.DhisProgrammeId)
+                entity.HasKey(e => e.DhisProgramId)
                     .HasName("dhis_programme_id_pk");
 
-                entity.ToTable("dhis_programmes");
+                entity.ToTable("dhis_programs");
 
-                entity.Property(e => e.DhisProgrammeId)
-                    .HasColumnName("dhis_programme_id")
+                entity.Property(e => e.DhisProgramId)
+                    .HasColumnName("dhis_program_id")
                     .HasMaxLength(30);
 
-                entity.Property(e => e.DhisProgrammeName)
-                    .HasColumnName("dhis_programme_name")
+                entity.Property(e => e.DhisProgramName)
+                    .HasColumnName("dhis_program_name")
                     .HasMaxLength(60);
+
+                entity.Property(e => e.DhisProgramStage)
+                    .IsRequired()
+                    .HasColumnName("dhis_program_stage")
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.DhisTrackedEntityId)
+                    .IsRequired()
+                    .HasColumnName("dhis_tracked_entity_id")
+                    .HasMaxLength(30);
             });
 
             modelBuilder.Entity<Districts>(entity =>
@@ -395,10 +405,6 @@ namespace Thandizo.DAL.Models
                     .HasName("districts_pkey");
 
                 entity.ToTable("districts");
-
-                entity.HasIndex(e => e.Document)
-                    .HasName("district_document_idx")
-                    .HasMethod("gin");
 
                 entity.Property(e => e.DistrictCode)
                     .HasColumnName("district_code")
@@ -544,6 +550,7 @@ namespace Thandizo.DAL.Models
                     .HasMaxLength(40);
 
                 entity.Property(e => e.OtherNames)
+                    .IsRequired()
                     .HasColumnName("other_names")
                     .HasMaxLength(40);
 
@@ -671,10 +678,6 @@ namespace Thandizo.DAL.Models
 
                 entity.ToTable("nationalities");
 
-                entity.HasIndex(e => e.Document)
-                    .HasName("document_idx")
-                    .HasMethod("gin");
-
                 entity.Property(e => e.NationalityCode)
                     .HasColumnName("nationality_code")
                     .HasMaxLength(5);
@@ -693,6 +696,10 @@ namespace Thandizo.DAL.Models
                     .HasColumnType("timestamp(4) with time zone");
 
                 entity.Property(e => e.Document).HasColumnName("document");
+
+                entity.Property(e => e.ExternalReferenceNumber)
+                    .HasColumnName("external_reference_number")
+                    .HasMaxLength(25);
 
                 entity.Property(e => e.ModifiedBy)
                     .HasColumnName("modified_by")
@@ -820,6 +827,8 @@ namespace Thandizo.DAL.Models
                     .HasColumnName("date_submitted")
                     .HasColumnType("timestamp(4) with time zone");
 
+                entity.Property(e => e.IsPostedToDhis).HasColumnName("is_posted_to_dhis");
+
                 entity.Property(e => e.PatientId).HasColumnName("patient_id");
 
                 entity.Property(e => e.SymptomId).HasColumnName("symptom_id");
@@ -839,9 +848,14 @@ namespace Thandizo.DAL.Models
 
             modelBuilder.Entity<PatientFacilityMovements>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.MovementId)
+                    .HasName("patient_facility_movement_pkey");
 
                 entity.ToTable("patient_facility_movements");
+
+                entity.Property(e => e.MovementId)
+                    .HasColumnName("movement_id")
+                    .HasDefaultValueSql("nextval('seq_facility_movement_id'::regclass)");
 
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
@@ -857,10 +871,6 @@ namespace Thandizo.DAL.Models
                 entity.Property(e => e.MovementDate)
                     .HasColumnName("movement_date")
                     .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.MovementId)
-                    .HasColumnName("movement_id")
-                    .HasDefaultValueSql("nextval('seq_facility_movement_id'::regclass)");
 
                 entity.Property(e => e.PatientId).HasColumnName("patient_id");
 
@@ -887,9 +897,14 @@ namespace Thandizo.DAL.Models
 
             modelBuilder.Entity<PatientHistory>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.HistoryId)
+                    .HasName("patient_history_pkey");
 
                 entity.ToTable("patient_history");
+
+                entity.Property(e => e.HistoryId)
+                    .HasColumnName("history_id")
+                    .HasDefaultValueSql("nextval('seq_patient_history_id'::regclass)");
 
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
@@ -903,10 +918,6 @@ namespace Thandizo.DAL.Models
                 entity.Property(e => e.DateReported)
                     .HasColumnName("date_reported")
                     .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.HistoryId)
-                    .HasColumnName("history_id")
-                    .HasDefaultValueSql("nextval('seq_patient_history_id'::regclass)");
 
                 entity.Property(e => e.PatientId).HasColumnName("patient_id");
 
@@ -927,9 +938,14 @@ namespace Thandizo.DAL.Models
 
             modelBuilder.Entity<PatientLocationMovements>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.MovementId)
+                    .HasName("patient_movements_pkey");
 
                 entity.ToTable("patient_location_movements");
+
+                entity.Property(e => e.MovementId)
+                    .HasColumnName("movement_id")
+                    .HasDefaultValueSql("nextval('seq_location_movement_id'::regclass)");
 
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
@@ -952,10 +968,6 @@ namespace Thandizo.DAL.Models
                 entity.Property(e => e.MovementDate)
                     .HasColumnName("movement_date")
                     .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.MovementId)
-                    .HasColumnName("movement_id")
-                    .HasDefaultValueSql("nextval('seq_location_movement_id'::regclass)");
 
                 entity.Property(e => e.PatientId).HasColumnName("patient_id");
 
@@ -1141,6 +1153,10 @@ namespace Thandizo.DAL.Models
                 entity.Property(e => e.EmailAddress)
                     .HasColumnName("email_address")
                     .HasMaxLength(60);
+
+                entity.Property(e => e.ExternalReferenceNumber)
+                    .HasColumnName("external_reference_number")
+                    .HasMaxLength(25);
 
                 entity.Property(e => e.FirstName)
                     .IsRequired()
