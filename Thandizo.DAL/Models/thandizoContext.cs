@@ -1731,34 +1731,19 @@ namespace Thandizo.DAL.Models
 
                 entity.Property(e => e.ChannelId).HasColumnName("channel_id");
 
-                entity.Property(e => e.CreatedBy)
-                    .IsRequired()
-                    .HasColumnName("created_by")
-                    .HasMaxLength(40);
-
-                entity.Property(e => e.DateCreated)
-                    .HasColumnName("date_created")
-                    .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.DateModified)
-                    .HasColumnName("date_modified")
-                    .HasColumnType("timestamp(4) with time zone");
-
-                entity.Property(e => e.IsRegisteredPatient).HasColumnName("is_registered_patient");
-
-                entity.Property(e => e.ModifiedBy)
-                    .HasColumnName("modified_by")
-                    .HasMaxLength(40);
-
                 entity.Property(e => e.PhoneNumber)
                     .IsRequired()
                     .HasColumnName("phone_number")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.RowAction)
+                entity.Property(e => e.RecipientAddress)
                     .IsRequired()
-                    .HasColumnName("row_action")
-                    .HasMaxLength(1);
+                    .HasColumnName("recipient_address")
+                    .HasMaxLength(60);
+
+                entity.Property(e => e.SubscriptionDate)
+                    .HasColumnName("subscription_date")
+                    .HasColumnType("timestamp(4) with time zone");
 
                 entity.HasOne(d => d.Channel)
                     .WithMany(p => p.Subscribers)
