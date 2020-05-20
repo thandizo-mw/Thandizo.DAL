@@ -600,6 +600,10 @@ namespace Thandizo.DAL.Models
 
                 entity.Property(e => e.Document).HasColumnName("document");
 
+                entity.Property(e => e.ExternalReferenceNumber)
+                    .HasColumnName("external_reference_number")
+                    .HasMaxLength(25);
+
                 entity.Property(e => e.ModifiedBy)
                     .HasColumnName("modified_by")
                     .HasMaxLength(40);
@@ -638,6 +642,8 @@ namespace Thandizo.DAL.Models
                 entity.Property(e => e.DateSubmitted)
                     .HasColumnName("date_submitted")
                     .HasColumnType("timestamp(4) with time zone");
+
+                entity.Property(e => e.IsPostedToDhis).HasColumnName("is_posted_to_dhis");
 
                 entity.Property(e => e.PatientId).HasColumnName("patient_id");
 

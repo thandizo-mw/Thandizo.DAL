@@ -19,6 +19,7 @@ namespace Thandizo.DAL.Models
         public string ModifiedBy { get; set; }
         public string RowAction { get; set; }
         public NpgsqlTsVector Document { get; set; }
+        public string ExternalReferenceNumber { get; set; }
 
         public virtual ICollection<Patients> Patients { get; set; }
     }
